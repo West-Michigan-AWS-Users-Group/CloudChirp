@@ -16,7 +16,8 @@ from troposphere.route53 import AliasTarget, RecordSetType
 
 
 # Function that saves the file , but makes sure it exists first.
-def save_to_file(template, settings_file_path='./cloudformation/template.json'):
+def save_to_file(template, environment):
+    settings_file_path = f'./cloudformation/{environment}-template.json'
     # Create settings file if it doesn't exist:
     settings_file = Path(settings_file_path)
     if settings_file.is_file():
@@ -299,4 +300,4 @@ t.add_output([
 json_data = json.loads(t.to_json())
 
 # Save the file to disk
-save_to_file(json_data)
+save_to_file(json_data, app_environment)
