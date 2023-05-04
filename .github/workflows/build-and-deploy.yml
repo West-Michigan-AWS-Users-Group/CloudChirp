@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - main
-      - staging
-      - production
+      - develop
 
 jobs:
   build_and_deploy:
@@ -25,7 +24,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: tnielsen2/cloudchirp:latest
+          tags: tnielsen2/cloudchirp:${{ github.ref }}
           builder: docker
           file: Dockerfile
 
@@ -33,4 +32,4 @@ jobs:
         env:
           APP_ENVIRONMENT: ${{ github.ref }}
         run: |
-          docker run -e APP_ENVIRONMENT=$APP_ENVIRONMENT tnielsen2/cloudchirp /app/transfer_to_s3.py
+          docker run -e APP_ENVIRONMENT=$APP_ENVIRONMENT tnielsen2/cloudchirp /app/__main__.py
