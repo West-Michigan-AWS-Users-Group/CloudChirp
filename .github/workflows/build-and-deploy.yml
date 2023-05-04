@@ -23,10 +23,10 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: tnielsen2/cloudchirp:${{ github.ref }}
+          tags: tnielsen2/cloudchirp:${{ github.ref_slug }}
 
       - name: Run Docker Image
         env:
           APP_ENVIRONMENT: ${{ github.ref }}
         run: |
-          docker run -e APP_ENVIRONMENT=${{ github.ref }} tnielsen2/cloudchirp /app/__main__.py
+          docker run -e APP_ENVIRONMENT=${{ github.ref_slug }} tnielsen2/cloudchirp /app/__main__.py
