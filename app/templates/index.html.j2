@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Site Locations</title>
+  </head>
+  <body>
+    <h1>Site Locations</h1>
+    <ul>
+      {% for location in site_locations %}
+        <h1>{{ location.site_abbv }}</h1>
+        <h3>{{ location.site_city }}</h3>
+          <li><a href="https://{{ bucketname }}/{{ location.site_abbv }}/{{ location.site_abbv }}_After_Hours.wav">Download {{ location.site_abbv }}_After_Hours.wav</a></li>
+          <li><a href="https://{{ bucketname }}/{{ location.site_abbv }}/{{ location.site_abbv }}_During_Hours.wav">Download {{ location.site_abbv }}_During_Hours.wav</a></li>
+          <li><a href="https://{{ bucketname }}/{{ location.site_abbv }}/{{ location.site_abbv }}_During_Hours_No_Answer.wav">Download {{ location.site_abbv }}_During_Hours_No_Answer.wav</a></li>
+          <br>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

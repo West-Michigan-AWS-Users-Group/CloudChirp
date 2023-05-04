@@ -1,0 +1,322 @@
+{
+  "Description": "dev: tbd - Cloudchirp Automation and related resources",
+  "Outputs": {
+    "AppDomainOutput": {
+      "Description": "App user URL",
+      "Value": "dev-cloudchirp.tbd.com"
+    },
+    "BucketName": {
+      "Description": "Name of S3 bucket for Cloudchirp",
+      "Value": {
+        "Ref": "bucket"
+      }
+    },
+    "CDNDomainOutput": {
+      "Description": "Domain for CDN",
+      "Value": {
+        "Fn::GetAtt": [
+          "cdnDistribution",
+          "DomainName"
+        ]
+      }
+    },
+    "saCloudchirpKeyId": {
+      "Description": "CloudChirp AccessKeyId",
+      "Value": {
+        "Ref": "saCloudchirpKeys"
+      }
+    },
+    "saCloudchirpSecretAccessKey": {
+      "Description": "CloudChirp SecretAccessKey",
+      "Value": {
+        "Fn::GetAtt": [
+          "saCloudchirpKeys",
+          "SecretAccessKey"
+        ]
+      }
+    }
+  },
+  "Resources": {
+    "bucket": {
+      "Properties": {
+        "BucketName": "dev-cloudchirp.tbd.com",
+        "Tags": [
+          {
+            "Key": "Service",
+            "Value": "Cloudchirp"
+          },
+          {
+            "Key": "ExtendedName",
+            "Value": "dev-us-east-1-cloudchirp"
+          }
+        ],
+        "WebsiteConfiguration": {
+          "IndexDocument": "index.html"
+        }
+      },
+      "Type": "AWS::S3::Bucket"
+    },
+    "cdnARecord": {
+      "Properties": {
+        "AliasTarget": {
+          "DNSName": {
+            "Fn::GetAtt": [
+              "cdnDistribution",
+              "DomainName"
+            ]
+          },
+          "HostedZoneId": "Z2FDTNDATAQYW2"
+        },
+        "Comment": "dev-cloudchirp.tbd.com domain record",
+        "HostedZoneName": "tbd.com.",
+        "Name": "dev-cloudchirp.tbd.com",
+        "Type": "A"
+      },
+      "Type": "AWS::Route53::RecordSet"
+    },
+    "cdnCertificate": {
+      "Properties": {
+        "DomainName": "dev-cloudchirp.tbd.com",
+        "DomainValidationOptions": [
+          {
+            "DomainName": "dev-cloudchirp.tbd.com",
+            "ValidationDomain": "tbd.com"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Service",
+            "Value": "Cloudchirp"
+          },
+          {
+            "Key": "ExtendedName",
+            "Value": "dev-us-east-1-cloudchirp"
+          },
+          {
+            "Key": "Name",
+            "Value": "dev-cloudchirp"
+          }
+        ],
+        "ValidationMethod": "DNS"
+      },
+      "Type": "AWS::CertificateManager::Certificate"
+    },
+    "cdnDistribution": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": [
+            "dev-cloudchirp.tbd.com"
+          ],
+          "Comment": "dev - dev-cloudchirp.tbd.com",
+          "CustomErrorResponses": [
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "403"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "404"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "500"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "501"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "502"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "503"
+            },
+            {
+              "ErrorCachingMinTTL": "0",
+              "ErrorCode": "504"
+            }
+          ],
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "GET",
+              "HEAD",
+              "OPTIONS"
+            ],
+            "CachedMethods": [
+              "GET",
+              "HEAD"
+            ],
+            "Compress": true,
+            "DefaultTTL": 86400,
+            "ForwardedValues": {
+              "Headers": [
+                "Accept-Encoding"
+              ],
+              "QueryString": true
+            },
+            "MaxTTL": 31536000,
+            "MinTTL": 0,
+            "SmoothStreaming": false,
+            "TargetOriginId": "dev-cloudchirp",
+            "ViewerProtocolPolicy": "redirect-to-https"
+          },
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "Origins": [
+            {
+              "CustomOriginConfig": {
+                "HTTPPort": 80,
+                "HTTPSPort": 443,
+                "OriginProtocolPolicy": "http-only",
+                "OriginSSLProtocols": [
+                  "TLSv1.2"
+                ]
+              },
+              "DomainName": {
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      "//",
+                      {
+                        "Fn::GetAtt": [
+                          "bucket",
+                          "WebsiteURL"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Id": "dev-cloudchirp"
+            }
+          ],
+          "PriceClass": "PriceClass_All",
+          "ViewerCertificate": {
+            "AcmCertificateArn": {
+              "Ref": "cdnCertificate"
+            },
+            "MinimumProtocolVersion": "TLSv1.2_2018",
+            "SslSupportMethod": "sni-only"
+          }
+        },
+        "Tags": [
+          {
+            "Key": "Service",
+            "Value": "Cloudchirp"
+          },
+          {
+            "Key": "ExtendedName",
+            "Value": "dev-us-east-1-cloudchirp"
+          }
+        ]
+      },
+      "Type": "AWS::CloudFront::Distribution"
+    },
+    "cfoaid": {
+      "Properties": {
+        "CloudFrontOriginAccessIdentityConfig": {
+          "Comment": "dev-cloudchirp.tbd.com origin access id"
+        }
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity"
+    },
+    "s3bucketpolicy": {
+      "Properties": {
+        "Bucket": {
+          "Ref": "bucket"
+        },
+        "PolicyDocument": {
+          "Statement": {
+            "Action": "s3:GetObject",
+            "Condition": {
+              "StringEquals": {
+                "AWS:SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:cloudfront::123456789:distribution/",
+                      {
+                        "Ref": "cdnDistribution"
+                      }
+                    ]
+                  ]
+                }
+              }
+            },
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "cloudfront.amazonaws.com"
+            },
+            "Resource": "arn:aws:s3:::dev-cloudchirp.tbd.com/*",
+            "Sid": "AllowCloudFrontServicePrincipalReadOnly"
+          },
+          "Version": "2012-10-17"
+        }
+      },
+      "Type": "AWS::S3::BucketPolicy"
+    },
+    "saCloudchirpAutomationPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:GetObjectVersion",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:ListMultipartUploadParts",
+                "s3:AbortMultipartUpload",
+                "s3:PutObject",
+                "s3:RestoreObject",
+                "s3:GetLifecycleConfiguration",
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:GetBucketLocation",
+                "s3:ListBucket"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::dev-cloudchirp.tbd.com",
+                "arn:aws:s3:::dev-cloudchirp.tbd.com*",
+                "arn:aws:s3:::dev-cloudchirp.tbd.com/*"
+              ]
+            },
+            {
+              "Action": [
+                "polly:*"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "*"
+              ]
+            }
+          ]
+        },
+        "PolicyName": "tbd-cloudchirp-cloudchirp-access",
+        "Users": [
+          {
+            "Ref": "saCloudchirpUser"
+          }
+        ]
+      },
+      "Type": "AWS::IAM::Policy"
+    },
+    "saCloudchirpKeys": {
+      "Properties": {
+        "Status": "Active",
+        "UserName": {
+          "Ref": "saCloudchirpUser"
+        }
+      },
+      "Type": "AWS::IAM::AccessKey"
+    },
+    "saCloudchirpUser": {
+      "Type": "AWS::IAM::User"
+    }
+  }
+}
