@@ -5,11 +5,12 @@ import subprocess
 from pathlib import Path
 
 import awacs.aws as awacs
-import awacs.s3 as awacs_s3
 import awacs.polly as awacs_polly
+import awacs.s3 as awacs_s3
 import troposphere.cloudfront as cf
 import troposphere.iam as iam
 import troposphere.s3 as s3
+from dotenv import load_dotenv
 from troposphere import GetAtt, Join, Output, Ref, Select, Split, Tags, Template
 from troposphere.certificatemanager import Certificate, DomainValidationOption
 from troposphere.route53 import AliasTarget, RecordSetType
@@ -30,6 +31,9 @@ def save_to_file(template, environment):
             json.dump(template, outfile, indent=2)
 
 
+# load repo .env file
+load_dotenv()
+
 # Configuration Variables
 app_group = 'cloudchirp'.capitalize()
 app_group_l = app_group.lower()
@@ -38,13 +42,13 @@ stack_description = 'Cloudchirp Automation and related resources'
 
 # AWS region/account vars
 app_region = 'us-east-1'
-aws_account_name = 'tbd'
-aws_account_number = '123456789'
+aws_account_name = os.environ.get('AWS_ACCOUNT_NAME')
+aws_account_number = os.environ.get('AWS_ACCOUNT_NUMBER')
 
 # Branch to env mapping
 branch_env_mapping = {
     'main': 'production',
-    'develop': 'dev'
+    'develop': 'develop'
 }
 result = subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=subprocess.PIPE)
 branch_name = result.stdout.decode().strip()
@@ -55,7 +59,7 @@ except KeyError as e:
     print('No branch mapping found')
 
 # CloudFront vars
-dns_domain = 'tbd.com.'
+dns_domain = os.environ.get('APP_DNS_DOMAIN')
 cfront_zone_id = 'Z2FDTNDATAQYW2'
 custom_origin_id = f'{app_environment}-{app_group_l}'
 app_dns_domain = f'{app_environment}-{app_group_l}.{dns_domain}'[:-1]
@@ -85,17 +89,17 @@ saCloudchirpKeys = t.add_resource(iam.AccessKey(
 
 # Don't do this in a normal production environment! This will output your keys in plain text in a CFN stack output.
 t.add_output([
-        Output(
-            'saCloudchirpKeyId',
-            Description='CloudChirp AccessKeyId',
-            Value=Ref(saCloudchirpKeys),
-        ),
-        Output(
-            'saCloudchirpSecretAccessKey',
-            Description='CloudChirp SecretAccessKey',
-            Value=GetAtt(saCloudchirpKeys, 'SecretAccessKey'),
-        ),
-    ])
+    Output(
+        'saCloudchirpKeyId',
+        Description='CloudChirp AccessKeyId',
+        Value=Ref(saCloudchirpKeys),
+    ),
+    Output(
+        'saCloudchirpSecretAccessKey',
+        Description='CloudChirp SecretAccessKey',
+        Value=GetAtt(saCloudchirpKeys, 'SecretAccessKey'),
+    ),
+])
 
 saCloudchirpAutomationPolicy = t.add_resource(iam.PolicyType(
     'saCloudchirpAutomationPolicy',
