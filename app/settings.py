@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv('../.env')
 
 # AWS variables
 aws_account_name = os.environ.get('AWS_ACCOUNT_NAME')
