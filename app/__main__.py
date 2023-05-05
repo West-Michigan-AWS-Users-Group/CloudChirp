@@ -1,6 +1,7 @@
 import aa
 import audio_conversion
 import index
+import settings
 import polly
 import transfer_to_s3
 from app_logger import logger
@@ -22,6 +23,7 @@ def main():
     transfer_to_s3.upload_auto_attendants()
     logger.info('Generating index.html')
     index.index_generation()
+    logger.info(f'https://{settings.s3_bucket_name} updated successfully! ')
 
 
 if __name__ == '__main__':
