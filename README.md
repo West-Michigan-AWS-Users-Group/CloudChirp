@@ -27,9 +27,17 @@ AWS_SECRET_ACCESS_KEY=appCredentialsPopulatMeAfterCfnDeployment
 ```shell
 python3 cloudformation/template.py
 ```
-6. Deploy your CloudFormation stack using the profile configured in .env. The Environment is derived from the git branch.
+6. Deploy your CloudFormation stack using the profile configured in .env using the shell script below.  
 ```shell
-ENVIRONMENT=$(git rev-parse --abbrev-ref HEAD)
+branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$branch_name" == "main" ]]; then
+  ENVIRONMENT="production"
+else
+  ENVIRONMENT="$branch_name"
+fi
+
+echo "Running in $ENVIRONMENT environment"
 source .env && aws cloudformation deploy --template-file cloudformation/$ENVIRONMENT-template.json --stack-name $ENVIRONMENT-cloudchirp --region us-east-1 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
 ```
 7. Ensure your ACM validation completes. AWS certificate manager will require you to validate your domain. If hosted in Route53 this is a 1 click deployment.
