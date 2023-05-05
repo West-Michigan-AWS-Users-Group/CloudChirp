@@ -243,6 +243,9 @@ bucket = t.add_resource(s3.Bucket(
             BlockPublicPolicy=False,
             IgnorePublicAcls=False,
             RestrictPublicBuckets=False,
+    ),
+    OwnershipControls=s3.OwnershipControls(
+        Rules=[s3.OwnershipControlsRule(ObjectOwnership='ObjectWriter')]
     )
 ))
 
