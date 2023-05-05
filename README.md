@@ -44,6 +44,6 @@ source .env && aws cloudformation deploy --template-file cloudformation/$ENVIRON
 ![acm-screenshot.png](acm-screenshot.png)
 8. Fetch your aws access keys from the stack outputs and store Github actions secrets as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Also add these to your .env file you want to test locally.
 9. You will now need to configure your Dockerhub credentials `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` for CI to push to Dockerhub.
-10. Configure your secrets in the GitHub actions menu:
+10. Configure your secrets in the GitHub actions menu. Take note that each environment key has a unique prefix. 
 ![actions-screenshot.png](actions-screenshot.png)
 11. Re-run Actions to build and populate the files.
