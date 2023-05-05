@@ -30,5 +30,7 @@ source .env && aws cloudformation deploy --template-file cloudformation/$ENVIRON
 7. Ensure your ACM validation completes. AWS certificate manager will require you to validate your domain. If hosted in Route53 this is a 1 click deployment.
 ![acm-screenshot.png](acm-screenshot.png)
 8. Fetch your aws access keys from the stack outputs and store Github actions secrets as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
-9. You will now need to configure your Dockerhub credentials `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` for CI.
-10. Re-run Actions to build and populate the files.
+9. You will now need to configure your Dockerhub credentials `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` for CI to push to Dockerhub.
+10. Configure your secrets in the GitHub actions menu:
+![actions-secrets.png](actions-secrets.png)
+11. Re-run Actions to build and populate the files.
