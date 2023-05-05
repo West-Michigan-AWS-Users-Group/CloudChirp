@@ -33,8 +33,11 @@ jobs:
           AWS_ACCOUNT_NAME: ${{ secrets.AWS_ACCOUNT_NAME }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          docker run -e APP_ENVIRONMENT=${{ env.APP_ENVIRONMENT }} \
+          docker run \
+          -e APP_DNS_DOMAIN=${{ env.APP_DNS_DOMAIN }} \
+          -e APP_ENVIRONMENT=${{ env.APP_ENVIRONMENT }} \
           -e AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }} \
+          -e AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }} \
+          -e AWS_ACCOUNT_NAME=${{ env.AWS_ACCOUNT_NAME }} \
           -e AWS_DEFAULT_REGION=us-east-1 \
           tnielsen2/cloudchirp:${{ github.ref_name }}
