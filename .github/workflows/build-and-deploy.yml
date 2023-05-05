@@ -29,7 +29,7 @@ jobs:
         if: ${{ github.ref_name == 'main' }}
         env:
           APP_DNS_DOMAIN: ${{ secrets.APP_DNS_DOMAIN }}
-          APP_ENVIRONMENT: ${{ github.ref_name }}
+          APP_ENVIRONMENT: production
           AWS_ACCESS_KEY_ID: ${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}
         run: |
