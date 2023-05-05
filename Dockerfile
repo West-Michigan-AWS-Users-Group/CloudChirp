@@ -21,4 +21,4 @@ WORKDIR /app
 COPY ./app /app
 
 # Start the application
-CMD [ "python", "./__main__.py" ]
+CMD [ "python3", "./__main__.py" ]
