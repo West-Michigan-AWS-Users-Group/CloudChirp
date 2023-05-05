@@ -5,9 +5,9 @@ Text-to-Speech Solution on AWS with Polly, CloudFront, and S3
 ### Pre-requisites
 - AWS profile used to deploy CloudFormation stacks. 
 - Dockerhub account and personal access token configured. 
+- Registered domain (preferably hosted in Route53 for easy ACM validation)
 
 ### App deployment
-
 1. Clone this repo.
 2. Checkout your branch name. The branch name is used to create a unique stack and environment for deployment. The app is configured for `develop` and `main` branch names.
 3. Install your requirements
