@@ -235,7 +235,13 @@ bucket = t.add_resource(s3.Bucket(
     Tags=default_tags,
     WebsiteConfiguration=(s3.WebsiteConfiguration(
         IndexDocument='index.html'
-    ))
+    )),
+    PublicAccessBlockConfiguration=s3.PublicAccessBlockConfiguration(
+            BlockPublicAcls=False,
+            BlockPublicPolicy=False,
+            IgnorePublicAcls=False,
+            RestrictPublicBuckets=False,
+    )
 ))
 
 # Provision the distribution origin access id to allow access to the bucket via CloudFront
