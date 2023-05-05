@@ -28,9 +28,9 @@ jobs:
       - name: Run Docker Image
         env:
           APP_DNS_DOMAIN: ${{ secrets.APP_DNS_DOMAIN }}
-          APP_ENVIRONMENT: ${{ if github.head_ref == 'main' }}production{{ else }}develop{{ endif }}
-          AWS_ACCESS_KEY_ID: ${{ if github.head_ref == 'main' }}${{ secrets.PRODUCTION_AWS_ACCESS_KEY_ID }}{{ else }}${{ secrets.DEVELOP_AWS_ACCESS_KEY_ID }}{{ endif }}
-          AWS_SECRET_ACCESS_KEY: ${{ if github.head_ref == 'main' }}${{ secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY }}{{ else }}${{ secrets.DEVELOP_AWS_SECRET_ACCESS_KEY }}{{ endif }}
+          APP_ENVIRONMENT: ${{ github.head_ref == 'main' ? production : develop }}
+          AWS_ACCESS_KEY_ID: ${{ github.head_ref == 'main' ? secrets.PRODUCTION_AWS_ACCESS_KEY_ID : secrets.DEVELOP_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ github.head_ref == 'main' ? secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY : secrets.DEVELOP_AWS_SECRET_ACCESS_KEY }}
         run: |
           docker run \
           -e APP_DNS_DOMAIN=${{ env.APP_DNS_DOMAIN }} \
