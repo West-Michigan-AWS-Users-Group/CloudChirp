@@ -11,7 +11,11 @@ site_locations = [
     {'site_name': 'The Factory',
      'site_address': '77 Monroe Center St NW Suite 600',
      'site_city': 'Grand Rapids, Michigan',
-     'site_abbv': 'GRMI'}
+     'site_abbv': 'GRMI'},
+    {'site_name': 'The Trent House',
+     'site_address': '1234 Rockford Place',
+     'site_city': 'Rockford, Michigan',
+     'site_abbv': 'RFMI'}
 ]
 
 # What filenames to create
